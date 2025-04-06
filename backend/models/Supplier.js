@@ -1,10 +1,6 @@
 const { Model, DataTypes } = require("sequelize");
 
 class Supplier extends Model {
-  static associate(models) {
-    // קשרים עם מודלים אחרים אם יש
-  }
-
   static init(sequelize) {
     super.init(
       {

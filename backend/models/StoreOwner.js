@@ -3,7 +3,6 @@ const { Model, DataTypes } = require("sequelize");
 
 class StoreOwner extends Model {
   static associate(models) {
-    // קשר בין בעל המכולת להזמנות
     StoreOwner.hasMany(models.Order, {
       foreignKey: "storeOwnerId",
       as: "orders",
@@ -43,13 +42,11 @@ class StoreOwner extends Model {
   }
 
   static async addInitialStoreOwner() {
-    // Check if the store owner already exists based on the phone number
     const storeOwnerExists = await StoreOwner.findOne({
-      where: { phone_number: "0506076978" }, // Check by phone number
+      where: { phone_number: "0506076978" },
     });
 
     if (!storeOwnerExists) {
-      // If not, create a new store owner
       await StoreOwner.create({
         fullname: "Bracha Cohen",
         company_name: "Bracha Company",

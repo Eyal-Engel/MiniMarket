@@ -5,7 +5,6 @@ class Order extends Model {
   static associate(models) {
     Order.belongsTo(models.Item, { foreignKey: "item_id" });
     Order.belongsTo(models.Supplier, { foreignKey: "supplier_id" });
-    // קשר בין הזמנה לבעל המכולת
     Order.belongsTo(models.StoreOwner, {
       foreignKey: "storeOwnerId",
       as: "storeOwner",

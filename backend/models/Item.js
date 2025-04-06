@@ -30,7 +30,7 @@ class Item extends Model {
           allowNull: false,
           validate: {
             isInt: true,
-            min: 1, // מינימום 1
+            min: 1,
           },
         },
         supplier_id: {
@@ -45,7 +45,7 @@ class Item extends Model {
           type: DataTypes.INTEGER,
           allowNull: false,
           validate: {
-            min: 0, // המלאי לא יכול להיות שלילי
+            min: 0,
           },
         },
       },
