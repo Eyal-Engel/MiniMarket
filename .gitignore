@@ -1,0 +1,16 @@
+# Ignore Backend files
+BACKEND/node_modules/
+BACKEND/.env
+BACKEND/*.log
+BACKEND/.DS_Store
+
+# Ignore Frontend files
+FRONTEND/node_modules/
+FRONTEND/.env
+FRONTEND/*.log
+FRONTEND/.DS_Store
+
+# Ignore general files
+*.log
+*.env
+.DS_Store
