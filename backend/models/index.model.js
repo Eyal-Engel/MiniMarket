@@ -11,7 +11,7 @@ const sequelize = new Sequelize({
 const db = {};
 
 fs.readdirSync(__dirname)
-  .filter((file) => file !== "index.js")
+  .filter((file) => file !== "index.model.js")
   .forEach((file) => {
     const model = require(path.join(__dirname, file));
     model.init(sequelize);
