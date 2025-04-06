@@ -1,28 +1,41 @@
-"use strict";
-const { Model } = require("sequelize");
+const { Model, DataTypes } = require("sequelize");
 
-module.exports = (sequelize, DataTypes) => {
-  const StoreOwner = sequelize.define("StoreOwner", {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-      allowNull: false,
-    },
-    fullname: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    company_name: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: false,
-    },
-    phone_number: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-  });
+class StoreOwner extends Model {
+  static associate(models) {
+    // אם יש קשרים בין מודלים, כאן תוכל להוסיף אותם.
+  }
 
-  return StoreOwner;
-};
+  static init(sequelize) {
+    super.init(
+      {
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+          allowNull: false,
+        },
+        fullname: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        company_name: {
+          type: DataTypes.STRING,
+          unique: true,
+          allowNull: false,
+        },
+        phone_number: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+      },
+      {
+        sequelize,
+        modelName: "StoreOwner",
+        tableName: "store_owners",
+        timestamps: true, // אם יש תאריכים של יצירה/עדכון
+      }
+    );
+  }
+}
+
+module.exports = StoreOwner;

@@ -2,8 +2,8 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    // Create the StoreOwners table
-    await queryInterface.createTable("StoreOwners", {
+    // Create the StoreOwners table with the updated table name
+    await queryInterface.createTable("store_owners", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -35,11 +35,11 @@ module.exports = {
 
     // Insert an initial record if the table is empty
     const [existing] = await queryInterface.sequelize.query(
-      `SELECT * FROM "StoreOwners" WHERE "phone_number" = '0506076978'`
+      `SELECT * FROM "store_owners" WHERE "phone_number" = '0506076978'`
     );
 
     if (existing.length === 0) {
-      await queryInterface.bulkInsert("StoreOwners", [
+      await queryInterface.bulkInsert("store_owners", [
         {
           fullname: "Bracha Cohen",
           company_name: "Bracha Company",
@@ -53,6 +53,7 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("StoreOwners");
+    // Drop the store_owners table
+    await queryInterface.dropTable("store_owners");
   },
 };

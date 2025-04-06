@@ -1,52 +1,30 @@
-"use strict";
-
 const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
-const process = require("process");
-const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || "development";
-const config = require(__dirname + "/../config/config.json")[env];
+const config = require(__dirname + "/../config/config.json")["development"];
+const sequelize = new Sequelize({
+  dialect: config.dialect,
+  storage: config.storage, // מיקום קובץ ה-DB
+});
+
 const db = {};
 
-let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config
-  );
-}
-
-// Read all model files in the current directory (excluding this file)
+// קריאה לכל הקבצים בתיקיית המודלים
 fs.readdirSync(__dirname)
-  .filter((file) => {
-    return (
-      file.indexOf(".") !== 0 && // Ignore files starting with a dot
-      file !== basename && // Ignore the current file (index.js)
-      file.slice(-3) === ".js" && // Ensure the file ends with .js
-      file.indexOf(".test.js") === -1 // Ignore test files
-    );
-  })
+  .filter((file) => file !== "index.js") // מתעלמים מהקובץ index.js עצמו
   .forEach((file) => {
-    const model = require(path.join(__dirname, file))(
-      sequelize,
-      Sequelize.DataTypes
-    );
-    db[model.name] = model;
+    const model = require(path.join(__dirname, file));
+    model.init(sequelize); // אם המודל משתמש ב-Class, יש לקרוא ל-init.
+    db[model.name] = model; // אחסון המודל ב-db כך שניתן לגשת אליו
   });
 
-// Set up associations if any
+// יצירת קשרים בין המודלים אם יש
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
   }
 });
 
-// Attach sequelize instance to db object
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

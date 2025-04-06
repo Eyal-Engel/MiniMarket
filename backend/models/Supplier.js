@@ -1,33 +1,45 @@
-"use strict";
-const { Model } = require("sequelize");
-const crypto = require("crypto");
+const { Model, DataTypes } = require("sequelize");
 
-module.exports = (sequelize, DataTypes) => {
-  const Supplier = sequelize.define("Supplier", {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true, // הוספתי את האפשרות שה-id יתמלא אוטומטית
-      allowNull: false,
-    },
-    company_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    phone: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true, // מוודא שמספר הטלפון יהיה ייחודי
-    },
-    representative_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-  });
+class Supplier extends Model {
+  static associate(models) {
+    // קשרים עם מודלים אחרים אם יש
+  }
 
-  return Supplier;
-};
+  static init(sequelize) {
+    super.init(
+      {
+        id: {
+          type: DataTypes.INTEGER,
+          primaryKey: true,
+          autoIncrement: true,
+          allowNull: false,
+        },
+        company_name: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        phone: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          unique: true,
+        },
+        representative_name: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        password: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+      },
+      {
+        sequelize,
+        modelName: "Supplier",
+        tableName: "suppliers",
+        timestamps: true,
+      }
+    );
+  }
+}
+
+module.exports = Supplier;
