@@ -1,8 +1,13 @@
+// StoreOwner model
 const { Model, DataTypes } = require("sequelize");
 
 class StoreOwner extends Model {
   static associate(models) {
-    // אם יש קשרים בין מודלים, כאן תוכל להוסיף אותם.
+    // קשר בין בעל המכולת להזמנות
+    StoreOwner.hasMany(models.Order, {
+      foreignKey: "storeOwnerId",
+      as: "orders",
+    });
   }
 
   static init(sequelize) {
@@ -32,9 +37,28 @@ class StoreOwner extends Model {
         sequelize,
         modelName: "StoreOwner",
         tableName: "store_owners",
-        timestamps: true, // אם יש תאריכים של יצירה/עדכון
+        timestamps: true,
       }
     );
+  }
+
+  static async addInitialStoreOwner() {
+    // Check if the store owner already exists based on the phone number
+    const storeOwnerExists = await StoreOwner.findOne({
+      where: { phone_number: "0506076978" }, // Check by phone number
+    });
+
+    if (!storeOwnerExists) {
+      // If not, create a new store owner
+      await StoreOwner.create({
+        fullname: "Bracha Cohen",
+        company_name: "Bracha Company",
+        phone_number: "0506076978",
+      });
+      console.log("Store Owner added: Bracha Cohen");
+    } else {
+      console.log("Store Owner with this phone number already exists.");
+    }
   }
 }
 

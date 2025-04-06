@@ -1,9 +1,15 @@
+// Order model
 const { Model, DataTypes } = require("sequelize");
 
 class Order extends Model {
   static associate(models) {
     Order.belongsTo(models.Item, { foreignKey: "item_id" });
     Order.belongsTo(models.Supplier, { foreignKey: "supplier_id" });
+    // קשר בין הזמנה לבעל המכולת
+    Order.belongsTo(models.StoreOwner, {
+      foreignKey: "storeOwnerId",
+      as: "storeOwner",
+    });
   }
 
   static init(sequelize) {
@@ -37,15 +43,15 @@ class Order extends Model {
         },
         status: {
           type: DataTypes.ENUM,
-          values: ["WAITING", "IN PROCESS", "PROCESSED"],
-          defaultValue: "WAITING",
+          values: ["IN PROCESS", "PROCESSED"],
+          defaultValue: "IN PROCESS",
           allowNull: false,
         },
         amount: {
           type: DataTypes.INTEGER,
           allowNull: false,
           validate: {
-            min: 1, // Minimum validation
+            min: 1,
           },
         },
         total_price: {

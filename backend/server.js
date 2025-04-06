@@ -287,19 +287,76 @@ app.get(
   }
 );
 
-// Sync the database and start the server with migrations
-const syncDatabaseAndStartServer = () => {
-  exec("sequelize-cli db:migrate", (err, stdout, stderr) => {
-    if (err) {
-      console.error("Error running migrations:", err);
-      return;
-    }
-    console.log("Migrations completed.");
+// Update the status of an order
+app.put("/orders/status/:orderId", authenticateToken, async (req, res) => {
+  const { orderId } = req.params;
+  const { newStatus } = req.body;
 
+  try {
+    // Fetch the order based on orderId, including the store owner details
+    const order = await db.Order.findByPk(orderId, {
+      include: [
+        {
+          model: db.StoreOwner, // Include store owner details
+          as: "storeOwner", // Specify the alias here
+          required: true, // Ensure we fetch the associated store owner
+        },
+      ],
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    // Check if the current user is the store owner of the order
+    if (order.storeOwnerId !== req.supplierId) {
+      return res.status(403).json({
+        error: "You are not authorized to update this order's status.",
+      });
+    }
+
+    // Only allow changing status from "IN PROCESS" to "PROCESSED"
+    if (order.status !== "IN PROCESS") {
+      return res.status(400).json({
+        error:
+          "You can only change the status from 'IN PROCESS' to 'PROCESSED'.",
+      });
+    }
+
+    // Ensure the new status is "PROCESSED"
+    if (newStatus !== "PROCESSED") {
+      return res.status(400).json({
+        error: "The status can only be updated to 'PROCESSED'.",
+      });
+    }
+
+    // Update the order status
+    order.status = newStatus;
+    await order.save();
+
+    res.json({ message: "Order status updated successfully", order });
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Sync the database and start the server without migrations
+const syncDatabaseAndStartServer = async () => {
+  try {
+    // Sync the database
+    await db.sequelize.sync({ force: false });
+
+    // Add the initial StoreOwner if not already present
+    await db.StoreOwner.addInitialStoreOwner();
+
+    // Start the server
     app.listen(port, () => {
       console.log(`Server running on http://localhost:${port}`);
     });
-  });
+  } catch (err) {
+    console.error("Error syncing the database:", err);
+  }
 };
 
 syncDatabaseAndStartServer();
