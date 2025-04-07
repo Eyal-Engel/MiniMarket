@@ -8,19 +8,24 @@ exports.login = async (req, res) => {
   if (!phone || !password) {
     return res
       .status(400)
-      .json({ error: "Phone number and password are required" });
+      .json({ error: "Phone number and password are required." });
   }
 
   try {
     const supplier = await Supplier.findOne({ where: { phone } });
 
     if (!supplier) {
-      return res.status(404).json({ error: "Supplier not found" });
+      return res.status(404).json({ error: "Supplier not found." });
     }
 
     const hashedPassword = hashPassword(password);
     if (hashedPassword !== supplier.password) {
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res
+        .status(401)
+        .json({
+          error:
+            "Invalid credentials. Please check your phone number or password.",
+        });
     }
 
     const token = jwt.sign(

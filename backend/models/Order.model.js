@@ -1,5 +1,6 @@
 // Order model
 const { Model, DataTypes } = require("sequelize");
+const { ORDER_STATUSES } = require("../constants/order.constant");
 
 class Order extends Model {
   static associate(models) {
@@ -42,8 +43,8 @@ class Order extends Model {
         },
         status: {
           type: DataTypes.ENUM,
-          values: ["IN PROCESS", "PROCESSED"],
-          defaultValue: "IN PROCESS",
+          values: [Object.values(ORDER_STATUSES)],
+          defaultValue: ORDER_STATUSES.WAITING,
           allowNull: false,
         },
         amount: {

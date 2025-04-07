@@ -1,6 +1,7 @@
 const Item = require("../models/Item.model");
 const Order = require("../models/Order.model");
 const StoreOwner = require("../models/StoreOwner.model");
+const { ORDER_STATUSES } = require("../constants/order.constant");
 
 exports.createOrder = async (req, res) => {
   const { item_id, storeOwnerId, amount } = req.body;
@@ -58,7 +59,7 @@ exports.getOrdersBySupplier = async (req, res) => {
   try {
     const orders = await Order.findAll({
       where: { supplier_id: supplierId },
-      include: [{ model: Item, required: true }],
+      include: [{ model: Item, required: true, attributes: ["name", "price"] }],
     });
 
     if (orders.length === 0) {
@@ -87,14 +88,33 @@ exports.updateOrderStatus = async (req, res) => {
       return res.status(404).json({ error: "Order not found" });
     }
 
-    if (order.storeOwnerId !== req.user.supplierId) {
-      return res.status(403).json({
-        error: "You are not authorized to update this order's status.",
-      });
+    // if (order.storeOwnerId !== req.user.supplierId) {
+    //   return res.status(403).json({
+    //     error: "You are not authorized to update this order's status.",
+    //   });
+    // }
+
+    if (
+      order.status === ORDER_STATUSES.WAITING ||
+      newStatus !== ORDER_STATUSES.IN_PROCESS
+    ) {
+      return res.status(400).json({ error: "Invalid status transition." });
     }
 
-    if (order.status !== "IN PROCESS" || newStatus !== "PROCESSED") {
+    if (
+      order.status === ORDER_STATUSES.IN_PROCESS ||
+      newStatus !== ORDER_STATUSES.PROCESSED
+    ) {
       return res.status(400).json({ error: "Invalid status transition." });
+    }
+
+    if (
+      order.status !== ORDER_STATUSES.IN_PROCESS &&
+      order.supplierId !== req.user.supplierId
+    ) {
+      return res.status(400).json({
+        error: "You are not authorized to update this order's status",
+      });
     }
 
     order.status = newStatus;
@@ -124,6 +144,7 @@ exports.getOrdersByStoreOwner = async (req, res) => {
         {
           model: Item,
           required: true,
+          attributes: ["name", "price"],
         },
       ],
     });

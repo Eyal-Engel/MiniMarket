@@ -34,7 +34,9 @@ exports.getItemsBySupplier = async (req, res) => {
 
   try {
     const items = await Item.findAll({
-      where: { supplier_id: supplierId },
+      where: {
+        supplier_id: supplierId,
+      },
     });
 
     if (items.length === 0) {
