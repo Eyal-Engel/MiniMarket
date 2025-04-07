@@ -292,7 +292,9 @@ const StoreOwnerOrders = () => {
               </Select>
             </FormControl>
           ) : (
-            <Typography sx={{ marginBottom: 2, color: "red" }}>
+            <Typography
+              sx={{ marginBottom: 2, color: "red", textAlign: "center" }}
+            >
               {selectedSupplier
                 ? "לא קיימים מוצרים אצל ספק זה."
                 : "בחר ספק כדי להציג את המוצרים."}
