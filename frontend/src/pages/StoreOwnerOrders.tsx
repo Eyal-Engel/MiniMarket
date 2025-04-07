@@ -233,7 +233,7 @@ const StoreOwnerOrders = () => {
                           handleUpdateOrderStatusByStoreOwner(order.id)
                         }
                       >
-                        עדכון הזמנה לבוצע
+                        עדכון הזמנה להושלמה
                       </Button>
                     ) : (
                       STATUS_TRANSLATIONS[order.status] || order.status
