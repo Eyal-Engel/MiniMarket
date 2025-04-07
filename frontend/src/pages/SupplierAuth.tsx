@@ -167,6 +167,7 @@ const SupplierAuth = () => {
             helperText={errors.phone}
           />
           <TextField
+            dir="ltr"
             fullWidth
             label="סיסמה"
             name="password"
