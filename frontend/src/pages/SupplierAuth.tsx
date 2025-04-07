@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from "react";
 import {
-  Container,
-  TextField,
-  Button,
-  Typography,
   Box,
   Link,
+  Button,
+  Container,
+  TextField,
+  Typography,
   IconButton,
   InputAdornment,
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+
 import { useNavigate } from "react-router-dom";
-import API from "../api/api";
+import React, { useEffect, useState } from "react";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { showErrorToast, showSuccessToast } from "../utils/toast.utility";
+import { loginSupplier, registerSupplier } from "../services/suppliers.service";
 
 const SupplierAuth = () => {
   const [isRegister, setIsRegister] = useState(false);
@@ -47,23 +48,16 @@ const SupplierAuth = () => {
   }, [navigate]);
 
   const validateField = (name: string, value: string) => {
-    switch (name) {
-      case "companyName":
-        if (isRegister && !value) return "שדה חובה";
-        break;
-      case "representativeName":
-        if (isRegister && !value) return "שדה חובה";
-        break;
-      case "phone":
-        if (!value) return "שדה חובה";
-        if (!/^\d{10}$/.test(value)) return "מספר טלפון לא תקין";
-        break;
-      case "password":
-        if (!value) return "שדה חובה";
-        if (value.length < 6) return "הסיסמה חייבת להיות לפחות 6 תווים";
-        break;
-      default:
-        return "";
+    if (name === "companyName") {
+      if (isRegister && !value) return "שדה חובה";
+    } else if (name === "representativeName") {
+      if (isRegister && !value) return "שדה חובה";
+    } else if (name === "phone") {
+      if (!value) return "שדה חובה";
+      if (!/^\d{10}$/.test(value)) return "מספר טלפון לא תקין";
+    } else if (name === "password") {
+      if (!value) return "שדה חובה";
+      if (value.length < 6) return "הסיסמה חייבת להיות לפחות 6 תווים";
     }
     return "";
   };
@@ -94,7 +88,7 @@ const SupplierAuth = () => {
 
     try {
       if (isRegister) {
-        await API.post("/suppliers", {
+        await registerSupplier({
           companyName: formData.companyName,
           phone: formData.phone,
           representativeName: formData.representativeName,
@@ -102,7 +96,7 @@ const SupplierAuth = () => {
         });
         showSuccessToast("הרשמה בוצעה בהצלחה!");
       }
-      const response = await API.post("/login", {
+      const response = await loginSupplier({
         phone: formData.phone,
         password: formData.password,
       });

@@ -1,8 +1,8 @@
 const Item = require("../models/Item.model");
 const Order = require("../models/Order.model");
+const Supplier = require("../models/Supplier.model");
 const StoreOwner = require("../models/StoreOwner.model");
 const { ORDER_STATUSES } = require("../constants/order.constant");
-const Supplier = require("../models/Supplier.model");
 
 exports.createOrder = async (req, res) => {
   const { itemId, storeOwnerId, amount } = req.body;

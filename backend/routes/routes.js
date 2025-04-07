@@ -1,21 +1,22 @@
 const express = require("express");
+
 const { authenticateToken } = require("../middlewares/auth.middleware");
 
-const supplierController = require("../controllers/supplier.controller");
 const authController = require("../controllers/auth.controller");
 const itemController = require("../controllers/item.controller");
 const orderController = require("../controllers/order.controller");
+const supplierController = require("../controllers/supplier.controller");
 
 const router = express.Router();
 
-// Supplier routes
+// supplier routes
 router.post("/suppliers", supplierController.createSupplier);
 router.get("/suppliers", supplierController.getAllSuppliers);
 
-// Authentication routes
+// authentication routes
 router.post("/login", authController.login);
 
-// Item routes
+// item routes
 router.post("/items", authenticateToken, itemController.createItem);
 router.get(
   "/items/supplier/:supplierId",
@@ -23,7 +24,7 @@ router.get(
   itemController.getItemsBySupplier
 );
 
-// Order routes
+// order routes
 router.post("/orders", orderController.createOrder);
 router.get(
   "/orders/supplier",

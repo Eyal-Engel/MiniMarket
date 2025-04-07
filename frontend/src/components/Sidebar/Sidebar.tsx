@@ -1,6 +1,6 @@
-import { List, ListItem, ListItemText, Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import useStyles from "./Sidebar.style";
+import { List, ListItem, ListItemText, Box, Typography } from "@mui/material";
 
 const Sidebar = () => {
   const classes = useStyles();

@@ -1,8 +1,14 @@
 import {
+  Box,
+  Table,
   Button,
   Dialog,
   Select,
   MenuItem,
+  TableRow,
+  TableBody,
+  TableCell,
+  TableHead,
   TextField,
   Container,
   Typography,
@@ -11,25 +17,26 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Table,
-  TableBody,
-  TableCell,
   TableContainer,
-  TableHead,
-  TableRow,
-  Box,
 } from "@mui/material";
-import { useState, useEffect } from "react";
+
+import {
+  createOrder,
+  fetchStoreOwnerOrders,
+  updateOrderStatusByStoreOwner,
+} from "../services/orders.service";
+
 import {
   fetchSuppliers,
   fetchItemsBySupplier,
 } from "../services/suppliers.service";
+
+import { useState, useEffect } from "react";
 import { IOrder } from "../interfaces/order.interface";
 import { ISupplier } from "../interfaces/supplier.interface";
+import { ORDER_STATUSES } from "../constants/order.constant";
 import { STATUS_TRANSLATIONS } from "../constants/status.constant";
 import { showErrorToast, showSuccessToast } from "../utils/toast.utility";
-import API from "../api/api";
-import { ORDER_STATUSES } from "../constants/order.constant";
 
 const StoreOwnerOrders = () => {
   const [orders, setOrders] = useState<IOrder[]>([]);
@@ -42,10 +49,9 @@ const StoreOwnerOrders = () => {
 
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
-  // Fetch orders
   const fetchOrders = async () => {
     try {
-      const response = await API.get("/orders/storeOwner/1");
+      const response = await fetchStoreOwnerOrders(1);
       setOrders(response.data);
     } catch (error) {
       showErrorToast(error);
@@ -56,7 +62,6 @@ const StoreOwnerOrders = () => {
     fetchOrders();
   }, []);
 
-  // Fetch suppliers
   useEffect(() => {
     const loadSuppliers = async () => {
       try {
@@ -70,13 +75,12 @@ const StoreOwnerOrders = () => {
     loadSuppliers();
   }, []);
 
-  // Fetch items by supplier
   const handleSupplierChange = async (supplierId: string) => {
     setSelectedSupplier(supplierId);
-    setSelectedItem(""); // Reset selected item when switching suppliers
-    setAmount(""); // Reset amount
-    setTotalPrice(0); // Reset total price
-    setItems([]); // Reset items list
+    setSelectedItem("");
+    setAmount("");
+    setTotalPrice(0);
+    setItems([]);
 
     if (!supplierId) {
       return;
@@ -87,7 +91,6 @@ const StoreOwnerOrders = () => {
       setItems(data);
     } catch (error: any) {
       if (error.response && error.response.status === 404) {
-        // Handle "No items found for this supplier" error
         setItems([]);
       } else {
         showErrorToast(error);
@@ -95,14 +98,11 @@ const StoreOwnerOrders = () => {
     }
   };
 
-  // Handle amount change
   const handleAmountChange = (value: string) => {
-    // Prevent invalid input (e.g., 'e', negative numbers, decimals)
     if (!/^\d*$/.test(value)) return;
 
     setAmount(value);
 
-    // Calculate total price
     const selectedItemData = items.find((item) => item.id === selectedItem);
     if (selectedItemData && value) {
       setTotalPrice(selectedItemData.price * parseInt(value, 10));
@@ -123,30 +123,29 @@ const StoreOwnerOrders = () => {
     }
 
     try {
-      await API.post("/orders", {
+      await createOrder({
         storeOwnerId: 1,
         itemId: selectedItem,
         amount: Number(amount),
       });
       setOpenDialog(false);
       showSuccessToast("Order created successfully!");
-      fetchOrders(); // Refresh orders after creating a new one
+      fetchOrders();
     } catch (error: any) {
-      showErrorToast(error); // הצגת הודעת השגיאה
+      showErrorToast(error);
     }
   };
 
   const handleUpdateOrderStatusByStoreOwner = async (orderId: number) => {
     try {
-      await API.put(`/orders/status/storeOwner/${orderId}`);
+      await updateOrderStatusByStoreOwner(orderId);
       showSuccessToast("Order status updated successfully!");
-      fetchOrders(); // Refresh orders after updating status
+      fetchOrders();
     } catch (error: any) {
-      showErrorToast(error); // הצגת הודעת השגיאה
+      showErrorToast(error);
     }
   };
 
-  // Check if the create order button should be disabled
   const isCreateOrderDisabled =
     !selectedSupplier || !selectedItem || !amount || parseInt(amount, 10) <= 0;
 
@@ -253,11 +252,10 @@ const StoreOwnerOrders = () => {
         </Table>
       </TableContainer>
 
-      {/* Dialog for creating a new order */}
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
-        sx={{ "& .MuiDialog-paper": { width: "500px", height: "400px" } }} // קביעת גודל קבוע לפופ-אפ
+        sx={{ "& .MuiDialog-paper": { width: "500px", height: "400px" } }}
       >
         <DialogTitle>יצירת הזמנה חדשה</DialogTitle>
         <DialogContent>
@@ -283,7 +281,7 @@ const StoreOwnerOrders = () => {
                 value={selectedItem}
                 onChange={(e) => {
                   setSelectedItem(e.target.value);
-                  handleAmountChange(amount); // Recalculate total price
+                  handleAmountChange(amount);
                 }}
               >
                 {items.map((item) => (

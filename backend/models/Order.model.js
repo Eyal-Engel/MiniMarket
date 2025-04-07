@@ -1,4 +1,3 @@
-// Order model
 const { Model, DataTypes } = require("sequelize");
 const { ORDER_STATUSES } = require("../constants/order.constant");
 

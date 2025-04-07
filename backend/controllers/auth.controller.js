@@ -28,7 +28,7 @@ exports.login = async (req, res) => {
 
     const token = jwt.sign(
       { supplierId: supplier.id },
-      process.env.JWT_SECRET || "secretKey",
+      process.env.JWT_SECRET || "secretKey", // of couse, in production, use a more secure secret key and not set default value it will be in secrets
       {
         expiresIn: "1h",
       }

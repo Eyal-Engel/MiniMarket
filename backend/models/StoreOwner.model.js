@@ -1,4 +1,3 @@
-// StoreOwner model
 const { Model, DataTypes } = require("sequelize");
 
 class StoreOwner extends Model {

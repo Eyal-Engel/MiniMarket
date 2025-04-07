@@ -1,12 +1,10 @@
 const Supplier = require("../models/Supplier.model");
 const { hashPassword } = require("../utils/hash.utility");
 
-// יצירת ספק חדש
 exports.createSupplier = async (req, res) => {
   try {
     const { companyName, phone, representativeName, password } = req.body;
 
-    // בדיקת שדות חובה
     if (!companyName || !phone || !representativeName || !password) {
       return res.status(400).json({
         error:
@@ -14,7 +12,6 @@ exports.createSupplier = async (req, res) => {
       });
     }
 
-    // בדיקה אם הספק כבר קיים
     const existingSupplier = await Supplier.findOne({ where: { phone } });
     if (existingSupplier) {
       return res.status(400).json({
@@ -22,7 +19,6 @@ exports.createSupplier = async (req, res) => {
       });
     }
 
-    // יצירת הספק
     const hashedPassword = hashPassword(password);
     const supplier = await Supplier.create({
       companyName,
@@ -33,7 +29,6 @@ exports.createSupplier = async (req, res) => {
 
     res.status(201).json(supplier);
   } catch (error) {
-    // טיפול בשגיאות ולידציה של Sequelize
     if (error.name === "SequelizeValidationError") {
       const validationErrors = error.errors.map((err) => err.message);
       return res.status(400).json({
@@ -47,11 +42,10 @@ exports.createSupplier = async (req, res) => {
   }
 };
 
-// שליפת כל הספקים
 exports.getAllSuppliers = async (req, res) => {
   try {
     const suppliers = await Supplier.findAll({
-      attributes: ["id", "companyName", "representativeName"], // בוחרים רק את השדות הרצויים
+      attributes: ["id", "companyName", "representativeName"],
     });
 
     res.status(200).json(suppliers);

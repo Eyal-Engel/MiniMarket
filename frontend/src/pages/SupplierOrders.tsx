@@ -1,36 +1,39 @@
-import { useEffect, useState } from "react";
 import {
-  Container,
-  Typography,
+  Box,
   Table,
+  Button,
+  TableRow,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
-  TableRow,
-  Button,
-  Box,
+  Container,
+  Typography,
   IconButton,
+  TableContainer,
 } from "@mui/material";
-import LogoutIcon from "@mui/icons-material/Logout"; // Import the logout icon
-import API from "../api/api";
+
+import {
+  updateOrderStatus,
+  fetchSupplierOrders,
+} from "../services/orders.service";
+
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { IOrder } from "../interfaces/order.interface";
 import { STATUS_TRANSLATIONS } from "../constants/status.constant";
 import { showErrorToast, showSuccessToast } from "../utils/toast.utility";
-import { useNavigate } from "react-router-dom";
 
 const SupplierOrders = () => {
   const navigate = useNavigate();
 
   const [orders, setOrders] = useState<IOrder[]>([]);
 
-  // Fetch orders for the supplier
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await API.get("/orders/supplier", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      if (!token) throw new Error("Token not found");
+      const response = await fetchSupplierOrders(token);
       setOrders(response.data);
     } catch (error) {
       showErrorToast(error);
@@ -44,9 +47,8 @@ const SupplierOrders = () => {
   const handleUpdateOrderStatus = async (orderId: number) => {
     try {
       const token = localStorage.getItem("token");
-      await API.put(`/orders/status/supplier/${orderId}`, null, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      if (!token) throw new Error("Token not found");
+      await updateOrderStatus(orderId, token);
       showSuccessToast("סטטוס ההזמנה עודכן בהצלחה!");
       fetchOrders();
     } catch (error) {
@@ -54,7 +56,6 @@ const SupplierOrders = () => {
     }
   };
 
-  // Handle logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/supplier");
