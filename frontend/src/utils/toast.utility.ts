@@ -4,6 +4,7 @@ import { ERROR_TRANSLATIONS } from "../constants/error.constant";
 export const showErrorToast = (error: any) => {
   let errorMessage = "שגיאה לא ידועה. אנא נסה שוב.";
 
+  console.log(error.response.data?.message);
   // בדיקה אם השגיאה היא מסוג Axios
   if (error.response && error.response.status) {
     const statusCode = error.response.status;
@@ -20,6 +21,18 @@ export const showErrorToast = (error: any) => {
       const minimumAmountMatch = serverMessage.match(/at least (\d+)/);
       const minimumAmount = minimumAmountMatch ? minimumAmountMatch[1] : "0";
       errorMessage = `הכמות חייבת להיות לפחות ${minimumAmount}`;
+    }
+    // טיפול בשגיאה "Supplier not found."
+    else if (serverMessage === "Supplier not found.") {
+      errorMessage = "ספק לא קיים במערכת";
+    }
+    // טיפול בשגיאה "Invalid credentials"
+    else if (
+      serverMessage ===
+      "Invalid credentials. Please check your phone number or password."
+    ) {
+      errorMessage =
+        "הפרטים שהוזנו אינם תקינים. אנא בדוק את מספר הטלפון או הסיסמה.";
     } else {
       // תרגום הודעת השגיאה אם קיימת
       errorMessage =
@@ -36,7 +49,6 @@ export const showErrorToast = (error: any) => {
   // הצגת הודעת השגיאה ב-Toastify
   toast.error(errorMessage);
 };
-
 export const showSuccessToast = (message: string) => {
   toast.success(message);
 };

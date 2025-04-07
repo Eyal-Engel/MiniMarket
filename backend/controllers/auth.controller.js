@@ -15,17 +15,15 @@ exports.login = async (req, res) => {
     const supplier = await Supplier.findOne({ where: { phone } });
 
     if (!supplier) {
-      return res.status(404).json({ error: "Supplier not found." });
+      return res.status(400).json({ message: "Supplier not found." });
     }
 
     const hashedPassword = hashPassword(password);
     if (hashedPassword !== supplier.password) {
-      return res
-        .status(401)
-        .json({
-          error:
-            "Invalid credentials. Please check your phone number or password.",
-        });
+      return res.status(401).json({
+        message:
+          "Invalid credentials. Please check your phone number or password.",
+      });
     }
 
     const token = jwt.sign(

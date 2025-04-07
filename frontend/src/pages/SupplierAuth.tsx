@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   TextField,
@@ -10,33 +10,48 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import API from "../api/api";
+import { showErrorToast, showSuccessToast } from "../utils/toast.utility";
 
 const SupplierAuth = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [formData, setFormData] = useState({
     phone: "",
     password: "",
-    company_name: "",
-    representative_name: "",
+    companyName: "",
+    representativeName: "",
   });
   const [errors, setErrors] = useState({
     phone: "",
     password: "",
-    company_name: "",
-    representative_name: "",
+    companyName: "",
+    representativeName: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      try {
+        const { exp } = JSON.parse(atob(token.split(".")[1]));
+        if (exp * 1000 > Date.now()) {
+          navigate("/supplier/orders");
+        }
+      } catch (error) {
+        console.error("Invalid token format", error);
+      }
+    }
+  }, [navigate]);
+
   const validateField = (name: string, value: string) => {
     switch (name) {
-      case "company_name":
+      case "companyName":
         if (isRegister && !value) return "שדה חובה";
         break;
-      case "representative_name":
+      case "representativeName":
         if (isRegister && !value) return "שדה חובה";
         break;
       case "phone":
@@ -80,25 +95,24 @@ const SupplierAuth = () => {
     try {
       if (isRegister) {
         await API.post("/suppliers", {
-          company_name: formData.company_name,
+          companyName: formData.companyName,
           phone: formData.phone,
-          representative_name: formData.representative_name,
+          representativeName: formData.representativeName,
           password: formData.password,
         });
-        toast.success("הרשמה בוצעה בהצלחה!");
-      } else {
-        const response = await API.post("/login", {
-          phone: formData.phone,
-          password: formData.password,
-        });
-        toast.success("התחברות בוצעה בהצלחה!");
-        localStorage.setItem("token", response.data.token);
-        navigate("/supplier/orders");
+        showSuccessToast("הרשמה בוצעה בהצלחה!");
       }
+      const response = await API.post("/login", {
+        phone: formData.phone,
+        password: formData.password,
+      });
+
+      showSuccessToast("התחברות בוצעה בהצלחה!");
+      localStorage.setItem("token", response.data.token);
+
+      navigate("/supplier/orders");
     } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.error || "אירעה שגיאה. נסה שוב.";
-      toast.error(errorMessage);
+      showErrorToast(error);
     }
   };
 
@@ -136,24 +150,24 @@ const SupplierAuth = () => {
             <TextField
               fullWidth
               label="שם החברה"
-              name="company_name"
-              value={formData.company_name}
+              name="companyName"
+              value={formData.companyName}
               onChange={handleInputChange}
               margin="normal"
-              error={!!errors.company_name}
-              helperText={errors.company_name}
+              error={!!errors.companyName}
+              helperText={errors.companyName}
             />
           )}
           {isRegister && (
             <TextField
               fullWidth
               label="שם הנציג"
-              name="representative_name"
-              value={formData.representative_name}
+              name="representativeName"
+              value={formData.representativeName}
               onChange={handleInputChange}
               margin="normal"
-              error={!!errors.representative_name}
-              helperText={errors.representative_name}
+              error={!!errors.representativeName}
+              helperText={errors.representativeName}
             />
           )}
           <TextField

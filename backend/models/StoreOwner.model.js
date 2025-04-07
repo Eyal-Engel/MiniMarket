@@ -22,21 +22,22 @@ class StoreOwner extends Model {
           type: DataTypes.STRING,
           allowNull: false,
         },
-        company_name: {
+        companyName: {
           type: DataTypes.STRING,
           unique: true,
           allowNull: false,
         },
-        phone_number: {
+        phoneNumber: {
           type: DataTypes.STRING,
           allowNull: false,
         },
       },
       {
         sequelize,
+        timestamps: true,
+        underscored: true,
         modelName: "StoreOwner",
         tableName: "store_owners",
-        timestamps: true,
       }
     );
   }
@@ -49,8 +50,8 @@ class StoreOwner extends Model {
     if (!storeOwnerExists) {
       await StoreOwner.create({
         fullname: "Bracha Cohen",
-        company_name: "Bracha Company",
-        phone_number: "0506076978",
+        companyName: "Bracha Company",
+        phoneNumber: "0506076978",
       });
       console.log("Store Owner added: Bracha Cohen");
     } else {

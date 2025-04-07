@@ -10,7 +10,7 @@ export const fetchOrdersByMarketOwner = async (
 
 export const createOrder = async (orderData: {
   storeOwnerId: number;
-  item_id: string;
+  itemId: string;
   amount: number;
 }): Promise<void> => {
   await API.post("/orders", orderData);

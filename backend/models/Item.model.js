@@ -25,7 +25,7 @@ class Item extends Model {
           type: DataTypes.DECIMAL(10, 2),
           allowNull: false,
         },
-        minimum_amount: {
+        minimumAmount: {
           type: DataTypes.INTEGER,
           allowNull: false,
           validate: {
@@ -33,7 +33,7 @@ class Item extends Model {
             min: 1,
           },
         },
-        supplier_id: {
+        supplierId: {
           type: DataTypes.INTEGER,
           references: {
             model: "Suppliers",
@@ -41,7 +41,7 @@ class Item extends Model {
           },
           allowNull: false,
         },
-        supply_amount: {
+        supplyAmount: {
           type: DataTypes.INTEGER,
           allowNull: false,
           validate: {
@@ -51,9 +51,10 @@ class Item extends Model {
       },
       {
         sequelize,
-        modelName: "Item",
-        tableName: "items",
         timestamps: true,
+        modelName: "Item",
+        underscored: true,
+        tableName: "items",
       }
     );
   }

@@ -1,8 +1,8 @@
 export interface ISupplier {
   id: number;
-  company_name: string;
+  companyName: string;
   phone: string;
-  representative_name: string;
+  representativeName: string;
   createdAt: string;
   updatedAt: string;
 }

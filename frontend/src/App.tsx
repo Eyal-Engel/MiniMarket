@@ -1,8 +1,7 @@
 import { Box } from "@mui/material";
-import SupplierAuth from "./pages/SupplierAuth";
 import Sidebar from "./components/Sidebar/Sidebar";
-import StoreOwnerOrders from "./pages/StoreOwnerOrders";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
+import AppRoutes from "./routes";
 
 const App = () => {
   return (
@@ -30,13 +29,7 @@ const App = () => {
               maxHeight: "100vh",
             }}
           >
-            <Routes>
-              <Route
-                path="/store-owner/orders"
-                element={<StoreOwnerOrders />}
-              />
-              <Route path="/supplier" element={<SupplierAuth />} />
-            </Routes>
+            <AppRoutes />
           </Box>
         </Box>
       </Box>

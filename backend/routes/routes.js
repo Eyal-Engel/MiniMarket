@@ -26,7 +26,7 @@ router.get(
 // Order routes
 router.post("/orders", orderController.createOrder);
 router.get(
-  "/orders/supplier/:supplierId",
+  "/orders/supplier",
   authenticateToken,
   orderController.getOrdersBySupplier
 );
@@ -35,10 +35,17 @@ router.get(
   // authenticateToken, add this line if want to authenticate store owner
   orderController.getOrdersByStoreOwner
 );
+
+// split update routes to be enable authentication for  supplier
 router.put(
-  "/orders/status/:orderId",
-  // authenticateToken, add this line if want to authenticate store owner
-  orderController.updateOrderStatus
+  "/orders/status/supplier/:orderId",
+  authenticateToken,
+  orderController.updateOrderStatusBySupplier
+);
+
+router.put(
+  "/orders/status/storeOwner/:orderId",
+  orderController.updateOrderStatusByStoreOwner
 );
 
 module.exports = router;

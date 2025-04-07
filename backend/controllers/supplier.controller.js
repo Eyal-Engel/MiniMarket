@@ -4,13 +4,13 @@ const { hashPassword } = require("../utils/hash.utility");
 // יצירת ספק חדש
 exports.createSupplier = async (req, res) => {
   try {
-    const { company_name, phone, representative_name, password } = req.body;
+    const { companyName, phone, representativeName, password } = req.body;
 
     // בדיקת שדות חובה
-    if (!company_name || !phone || !representative_name || !password) {
+    if (!companyName || !phone || !representativeName || !password) {
       return res.status(400).json({
         error:
-          "All fields are required: company_name, phone, representative_name, password",
+          "All fields are required: companyName, phone, representativeName, password",
       });
     }
 
@@ -25,9 +25,9 @@ exports.createSupplier = async (req, res) => {
     // יצירת הספק
     const hashedPassword = hashPassword(password);
     const supplier = await Supplier.create({
-      company_name,
+      companyName,
       phone,
-      representative_name,
+      representativeName,
       password: hashedPassword,
     });
 
@@ -51,7 +51,7 @@ exports.createSupplier = async (req, res) => {
 exports.getAllSuppliers = async (req, res) => {
   try {
     const suppliers = await Supplier.findAll({
-      attributes: ["id", "company_name", "representative_name"], // בוחרים רק את השדות הרצויים
+      attributes: ["id", "companyName", "representativeName"], // בוחרים רק את השדות הרצויים
     });
 
     res.status(200).json(suppliers);

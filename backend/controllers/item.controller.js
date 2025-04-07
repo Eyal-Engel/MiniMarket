@@ -3,23 +3,21 @@ const Supplier = require("../models/Supplier.model");
 
 exports.createItem = async (req, res) => {
   try {
-    const { name, price, minimum_amount, supply_amount } = req.body;
-    const supplier_id = req.user.supplierId;
+    const { name, price, minimumAmount, supplyAmount } = req.body;
+    const supplierId = req.user.supplierId;
 
-    const supplier = await Supplier.findByPk(supplier_id);
+    const supplier = await Supplier.findByPk(supplierId);
 
-    console.log(supplier_id);
-    console.log(supplier);
     if (!supplier) {
-      return res.status(404).json({ error: "Supplier not found" });
+      return res.status(400).json({ error: "Supplier not found" });
     }
 
     const item = await Item.create({
       name,
       price,
-      minimum_amount,
-      supply_amount,
-      supplier_id,
+      minimumAmount,
+      supplyAmount,
+      supplierId,
     });
 
     res.json(item);
@@ -35,7 +33,7 @@ exports.getItemsBySupplier = async (req, res) => {
   try {
     const items = await Item.findAll({
       where: {
-        supplier_id: supplierId,
+        supplierId,
       },
     });
 

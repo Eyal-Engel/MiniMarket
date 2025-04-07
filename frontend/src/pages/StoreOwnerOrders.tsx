@@ -125,7 +125,7 @@ const StoreOwnerOrders = () => {
     try {
       await API.post("/orders", {
         storeOwnerId: 1,
-        item_id: selectedItem,
+        itemId: selectedItem,
         amount: Number(amount),
       });
       setOpenDialog(false);
@@ -136,9 +136,9 @@ const StoreOwnerOrders = () => {
     }
   };
 
-  const handleUpdateOrderStatus = async (orderId: number) => {
+  const handleUpdateOrderStatusByStoreOwner = async (orderId: number) => {
     try {
-      await API.put(`/orders/status/${orderId}`, { newStatus: "PROCESSED" });
+      await API.put(`/orders/status/storeOwner/${orderId}`);
       showSuccessToast("Order status updated successfully!");
       fetchOrders(); // Refresh orders after updating status
     } catch (error: any) {
@@ -197,32 +197,42 @@ const StoreOwnerOrders = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {orders.map((order: IOrder) => (
-              <TableRow key={order.id}>
-                <TableCell align="right">{order.item_id}</TableCell>
-                <TableCell align="right">{order.Item.name}</TableCell>
-                <TableCell align="right">
-                  {order.Item.price.toFixed(2)}
-                </TableCell>
-                <TableCell align="right">{order.amount}</TableCell>
-                <TableCell align="right">
-                  {order.total_price.toFixed(2)}
-                </TableCell>
-                <TableCell align="right">
-                  {order.status === ORDER_STATUSES.IN_PROCESS ? (
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleUpdateOrderStatus(order.id)}
-                    >
-                      עדכון הזמנה לבוצע
-                    </Button>
-                  ) : (
-                    STATUS_TRANSLATIONS[order.status] || order.status
-                  )}
+            {orders.length > 0 ? (
+              orders.map((order: IOrder) => (
+                <TableRow key={order.id}>
+                  <TableCell align="right">{order.itemId}</TableCell>
+                  <TableCell align="right">{order.Item.name}</TableCell>
+                  <TableCell align="right">
+                    {order.Item.price.toFixed(2)}
+                  </TableCell>
+                  <TableCell align="right">{order.amount}</TableCell>
+                  <TableCell align="right">
+                    {order.totalPrice.toFixed(2)}
+                  </TableCell>
+                  <TableCell align="right">
+                    {order.status === ORDER_STATUSES.IN_PROCESS ? (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateOrderStatusByStoreOwner(order.id)
+                        }
+                      >
+                        עדכון הזמנה לבוצע
+                      </Button>
+                    ) : (
+                      STATUS_TRANSLATIONS[order.status] || order.status
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell align="center" colSpan={6}>
+                  אין הזמנות קיימות
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -245,7 +255,7 @@ const StoreOwnerOrders = () => {
                 <MenuItem
                   key={supplier.id}
                   value={supplier.id}
-                >{`${supplier.company_name} - ${supplier.representative_name}`}</MenuItem>
+                >{`${supplier.companyName} - ${supplier.representativeName}`}</MenuItem>
               ))}
             </Select>
           </FormControl>

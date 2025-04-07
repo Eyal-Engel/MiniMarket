@@ -21,7 +21,7 @@ class Order extends Model {
           autoIncrement: true,
           allowNull: false,
         },
-        item_id: {
+        itemId: {
           type: DataTypes.INTEGER,
           references: {
             model: "Items",
@@ -29,7 +29,7 @@ class Order extends Model {
           },
           allowNull: false,
         },
-        supplier_id: {
+        supplierId: {
           type: DataTypes.INTEGER,
           references: {
             model: "Suppliers",
@@ -40,6 +40,7 @@ class Order extends Model {
         storeOwnerId: {
           type: DataTypes.INTEGER,
           allowNull: false,
+          as: "storeOwnerId",
         },
         status: {
           type: DataTypes.ENUM,
@@ -54,16 +55,17 @@ class Order extends Model {
             min: 1,
           },
         },
-        total_price: {
+        totalPrice: {
           type: DataTypes.FLOAT,
           allowNull: false,
         },
       },
       {
         sequelize,
+        timestamps: true,
+        underscored: true,
         modelName: "Order",
         tableName: "orders",
-        timestamps: true,
       }
     );
   }

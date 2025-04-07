@@ -10,7 +10,7 @@ class Supplier extends Model {
           autoIncrement: true,
           allowNull: false,
         },
-        company_name: {
+        companyName: {
           type: DataTypes.STRING,
           allowNull: false,
         },
@@ -19,7 +19,7 @@ class Supplier extends Model {
           allowNull: false,
           unique: true,
         },
-        representative_name: {
+        representativeName: {
           type: DataTypes.STRING,
           allowNull: false,
         },
@@ -30,9 +30,10 @@ class Supplier extends Model {
       },
       {
         sequelize,
+        timestamps: true,
+        underscored: true,
         modelName: "Supplier",
         tableName: "suppliers",
-        timestamps: true,
       }
     );
   }

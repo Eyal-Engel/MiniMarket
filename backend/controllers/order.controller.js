@@ -4,7 +4,7 @@ const StoreOwner = require("../models/StoreOwner.model");
 const { ORDER_STATUSES } = require("../constants/order.constant");
 
 exports.createOrder = async (req, res) => {
-  const { item_id, storeOwnerId, amount } = req.body;
+  const { itemId, storeOwnerId, amount } = req.body;
 
   try {
     const storeOwner = await StoreOwner.findByPk(storeOwnerId);
@@ -14,36 +14,36 @@ exports.createOrder = async (req, res) => {
         .send({ message: "StoreOwner not found for the given storeOwnerId" });
     }
 
-    const item = await Item.findOne({ where: { id: item_id } });
+    const item = await Item.findOne({ where: { id: itemId } });
     if (!item) {
       return res
         .status(404)
-        .send({ message: "Item not found for the given item_id" });
+        .send({ message: "Item not found for the given itemId" });
     }
 
-    if (amount < item.minimum_amount) {
+    if (amount < item.minimumAmount) {
       return res
         .status(400)
-        .send({ message: `Amount must be at least ${item.minimum_amount}` });
+        .send({ message: `Amount must be at least ${item.minimumAmount}` });
     }
 
-    if (amount > item.supply_amount) {
+    if (amount > item.supplyAmount) {
       return res.status(400).send({
-        message: `Not enough stock available. Available stock: ${item.supply_amount}`,
+        message: `Not enough stock available. Available stock: ${item.supplyAmount}`,
       });
     }
 
-    const total_price = item.price * amount;
+    const totalPrice = (item.price * amount).toFixed(2);
 
     const order = await Order.create({
-      item_id,
-      supplier_id: item.supplier_id,
+      itemId,
+      supplierId: item.supplierId,
       storeOwnerId,
       amount,
-      total_price,
+      totalPrice,
     });
 
-    item.supply_amount -= amount;
+    item.supplyAmount -= amount;
     await item.save();
 
     return res.status(201).send(order);
@@ -54,18 +54,16 @@ exports.createOrder = async (req, res) => {
 };
 
 exports.getOrdersBySupplier = async (req, res) => {
-  const { supplierId } = req.params;
+  const supplierId = req.user.supplierId;
 
   try {
     const orders = await Order.findAll({
-      where: { supplier_id: supplierId },
+      where: { supplierId: supplierId },
       include: [{ model: Item, required: true, attributes: ["name", "price"] }],
     });
 
     if (orders.length === 0) {
-      return res
-        .status(404)
-        .json({ error: "No orders found for this supplier" });
+      return res.status(200).json([]);
     }
 
     res.json(orders);
@@ -75,9 +73,8 @@ exports.getOrdersBySupplier = async (req, res) => {
   }
 };
 
-exports.updateOrderStatus = async (req, res) => {
+exports.updateOrderStatusBySupplier = async (req, res) => {
   const { orderId } = req.params;
-  const { newStatus } = req.body;
 
   try {
     const order = await Order.findByPk(orderId, {
@@ -88,36 +85,50 @@ exports.updateOrderStatus = async (req, res) => {
       return res.status(404).json({ error: "Order not found" });
     }
 
+    // Future feature: Check if the user is the store owner of the order and combine it to one route
     // if (order.storeOwnerId !== req.user.supplierId) {
     //   return res.status(403).json({
     //     error: "You are not authorized to update this order's status.",
     //   });
     // }
 
-    if (
-      order.status === ORDER_STATUSES.WAITING ||
-      newStatus !== ORDER_STATUSES.IN_PROCESS
-    ) {
+    if (order.status !== ORDER_STATUSES.WAITING) {
       return res.status(400).json({ error: "Invalid status transition." });
     }
 
-    if (
-      order.status === ORDER_STATUSES.IN_PROCESS ||
-      newStatus !== ORDER_STATUSES.PROCESSED
-    ) {
-      return res.status(400).json({ error: "Invalid status transition." });
-    }
-
-    if (
-      order.status !== ORDER_STATUSES.IN_PROCESS &&
-      order.supplierId !== req.user.supplierId
-    ) {
+    if (!req?.user?.supplierId || order.supplierId !== req.user.supplierId) {
       return res.status(400).json({
         error: "You are not authorized to update this order's status",
       });
     }
 
-    order.status = newStatus;
+    order.status = ORDER_STATUSES.IN_PROCESS;
+    await order.save();
+
+    res.json({ message: "Order status updated successfully", order });
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.updateOrderStatusByStoreOwner = async (req, res) => {
+  const { orderId } = req.params;
+
+  try {
+    const order = await Order.findByPk(orderId, {
+      include: [{ model: StoreOwner, as: "storeOwner", required: true }],
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    if (order.status !== ORDER_STATUSES.IN_PROCESS) {
+      return res.status(400).json({ error: "Invalid status transition." });
+    }
+
+    order.status = ORDER_STATUSES.PROCESSED;
     await order.save();
 
     res.json({ message: "Order status updated successfully", order });
@@ -150,9 +161,7 @@ exports.getOrdersByStoreOwner = async (req, res) => {
     });
 
     if (orders.length === 0) {
-      return res
-        .status(404)
-        .json({ error: "No orders found for this store owner" });
+      return res.status(200).json([]);
     }
 
     res.json(orders);
