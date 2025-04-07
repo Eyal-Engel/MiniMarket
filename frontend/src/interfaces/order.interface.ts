@@ -14,4 +14,14 @@ export interface IOrder {
     name: string;
     price: number;
   };
+  storeOwner: {
+    companyName: string;
+    fullname: string;
+    phoneNumber: string;
+  };
+  Supplier: {
+    companyName: string;
+    representativeName: string;
+    phone: string;
+  };
 }

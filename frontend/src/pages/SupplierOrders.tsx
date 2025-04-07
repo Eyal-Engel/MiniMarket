@@ -97,6 +97,15 @@ const SupplierOrders = () => {
                 מק"ט מוצר
               </TableCell>
               <TableCell align="right" sx={{ fontWeight: "bold" }}>
+                שם בעל המכולת
+              </TableCell>
+              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+                שם החברה
+              </TableCell>
+              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+                מספר טלפון של בעל המכולת
+              </TableCell>
+              <TableCell align="right" sx={{ fontWeight: "bold" }}>
                 שם המוצר
               </TableCell>
               <TableCell align="right" sx={{ fontWeight: "bold" }}>
@@ -116,7 +125,7 @@ const SupplierOrders = () => {
           <TableBody>
             {orders.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} align="center">
+                <TableCell colSpan={10} align="center">
                   אין הזמנות קיימות
                 </TableCell>
               </TableRow>
@@ -125,6 +134,15 @@ const SupplierOrders = () => {
                 <TableRow key={order.id}>
                   <TableCell align="right">{order.id}</TableCell>
                   <TableCell align="right">{order.itemId}</TableCell>
+                  <TableCell align="right">
+                    {order.storeOwner.fullname}
+                  </TableCell>
+                  <TableCell align="right">
+                    {order.storeOwner.companyName}
+                  </TableCell>
+                  <TableCell align="right">
+                    {order.storeOwner.phoneNumber}
+                  </TableCell>
                   <TableCell align="right">{order.Item.name}</TableCell>
                   <TableCell align="right">
                     {order.Item.price.toFixed(2)}

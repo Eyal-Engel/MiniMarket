@@ -2,24 +2,28 @@ import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles({
   sidebar: {
-    width: 240, // רוחב ה-Sidebar
-    height: "100%", // גובה מלא
-    right: 0, // יישור לימין
+    width: 240,
+    height: "100%",
+    right: 0,
     top: 0,
-    backgroundColor: "#1976d2", // צבע רקע (primary.main)
-    color: "white", // צבע טקסט
+    backgroundColor: "#1976d2",
+    color: "white",
     display: "flex",
     flexDirection: "column",
   },
   listItem: {
     color: "white",
     textAlign: "left",
-    fontWeight: "bold", // טקסט מודגש
-    fontSize: "1.2rem", // גודל פונט מוגדל
-    textDecoration: "none", // ביטול קו תחתון
+    fontWeight: "bold",
+    fontSize: "1.2rem",
+    textDecoration: "none",
     "&:hover": {
-      backgroundColor: "#115293", // רקע כהה יותר ב-HOVER (primary.dark)
-      fontWeight: "bolder", // טקסט מודגש יותר ב-HOVER
+      backgroundColor: "#115293",
+      fontWeight: "bolder",
+      color: "white !important",
+    },
+    "&:visited": {
+      color: "white",
     },
   },
   listItemText: {

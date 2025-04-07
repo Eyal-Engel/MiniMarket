@@ -180,6 +180,15 @@ const StoreOwnerOrders = () => {
                 מק"ט מוצר
               </TableCell>
               <TableCell align="right" sx={{ fontWeight: "bold" }}>
+                שם החברה
+              </TableCell>
+              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+                שם הנציג
+              </TableCell>
+              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+                טלפון הנציג
+              </TableCell>
+              <TableCell align="right" sx={{ fontWeight: "bold" }}>
                 שם המוצר
               </TableCell>
               <TableCell align="right" sx={{ fontWeight: "bold" }}>
@@ -201,6 +210,13 @@ const StoreOwnerOrders = () => {
               orders.map((order: IOrder) => (
                 <TableRow key={order.id}>
                   <TableCell align="right">{order.itemId}</TableCell>
+                  <TableCell align="right">
+                    {order.Supplier.companyName}
+                  </TableCell>
+                  <TableCell align="right">
+                    {order.Supplier.representativeName}
+                  </TableCell>
+                  <TableCell align="right">{order.Supplier.phone}</TableCell>
                   <TableCell align="right">{order.Item.name}</TableCell>
                   <TableCell align="right">
                     {order.Item.price.toFixed(2)}
@@ -228,7 +244,7 @@ const StoreOwnerOrders = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell align="center" colSpan={6}>
+                <TableCell align="center" colSpan={9}>
                   אין הזמנות קיימות
                 </TableCell>
               </TableRow>

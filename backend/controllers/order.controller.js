@@ -2,6 +2,7 @@ const Item = require("../models/Item.model");
 const Order = require("../models/Order.model");
 const StoreOwner = require("../models/StoreOwner.model");
 const { ORDER_STATUSES } = require("../constants/order.constant");
+const Supplier = require("../models/Supplier.model");
 
 exports.createOrder = async (req, res) => {
   const { itemId, storeOwnerId, amount } = req.body;
@@ -59,7 +60,22 @@ exports.getOrdersBySupplier = async (req, res) => {
   try {
     const orders = await Order.findAll({
       where: { supplierId: supplierId },
-      include: [{ model: Item, required: true, attributes: ["name", "price"] }],
+      include: [
+        {
+          model: Item,
+          required: true,
+          attributes: ["name", "price"],
+        },
+        {
+          model: Supplier,
+          required: true,
+        },
+        {
+          model: StoreOwner,
+          required: true,
+          as: "storeOwner",
+        },
+      ],
     });
 
     if (orders.length === 0) {
@@ -156,6 +172,15 @@ exports.getOrdersByStoreOwner = async (req, res) => {
           model: Item,
           required: true,
           attributes: ["name", "price"],
+        },
+        {
+          model: Supplier,
+          required: true,
+        },
+        {
+          model: StoreOwner,
+          required: true,
+          as: "storeOwner",
         },
       ],
     });
