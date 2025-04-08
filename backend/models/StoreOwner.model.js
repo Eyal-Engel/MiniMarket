@@ -43,7 +43,7 @@ class StoreOwner extends Model {
 
   static async addInitialStoreOwner() {
     const storeOwnerExists = await StoreOwner.findOne({
-      where: { phone_number: "0506076978" },
+      where: { phoneNumber: "0506076978" },
     });
 
     if (!storeOwnerExists) {

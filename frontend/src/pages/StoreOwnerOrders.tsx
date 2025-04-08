@@ -37,6 +37,7 @@ import { ISupplier } from "../interfaces/supplier.interface";
 import { ORDER_STATUSES } from "../constants/order.constant";
 import { STATUS_TRANSLATIONS } from "../constants/status.constant";
 import { showErrorToast, showSuccessToast } from "../utils/toast.utility";
+import { toast } from "react-toastify";
 
 const StoreOwnerOrders = () => {
   const [orders, setOrders] = useState<IOrder[]>([]);
@@ -46,7 +47,6 @@ const StoreOwnerOrders = () => {
   const [selectedSupplier, setSelectedSupplier] = useState<string>("");
   const [selectedItem, setSelectedItem] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
-
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
   const fetchOrders = async () => {
@@ -118,7 +118,7 @@ const StoreOwnerOrders = () => {
       !amount ||
       parseInt(amount, 10) <= 0
     ) {
-      alert("All fields are required.");
+      toast.error("יש למלא את כלל השדות");
       return;
     }
 
@@ -129,7 +129,7 @@ const StoreOwnerOrders = () => {
         amount: Number(amount),
       });
       setOpenDialog(false);
-      showSuccessToast("Order created successfully!");
+      showSuccessToast("ההזמנה בוצעה בהצלחה!");
       fetchOrders();
     } catch (error: any) {
       showErrorToast(error);
@@ -139,7 +139,7 @@ const StoreOwnerOrders = () => {
   const handleUpdateOrderStatusByStoreOwner = async (orderId: number) => {
     try {
       await updateOrderStatusByStoreOwner(orderId);
-      showSuccessToast("Order status updated successfully!");
+      showSuccessToast("סטטוה ההזמנה עודכן בהצלחה!");
       fetchOrders();
     } catch (error: any) {
       showErrorToast(error);

@@ -96,6 +96,7 @@ const SupplierAuth = () => {
         });
         showSuccessToast("הרשמה בוצעה בהצלחה!");
       }
+
       const response = await loginSupplier({
         phone: formData.phone,
         password: formData.password,

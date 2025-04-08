@@ -1,7 +1,7 @@
+import AppRoutes from "./routes";
 import { Box } from "@mui/material";
 import Sidebar from "./components/Sidebar/Sidebar";
 import { BrowserRouter as Router } from "react-router-dom";
-import AppRoutes from "./routes";
 
 const App = () => {
   return (

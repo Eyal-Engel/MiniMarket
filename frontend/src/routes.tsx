@@ -10,6 +10,7 @@ const AppRoutes = () => {
       <Route path="/store-owner/orders" element={<StoreOwnerOrders />} />
       <Route path="/supplier" element={<SupplierAuth />} />
       <Route path="/supplier/orders" element={<SupplierOrders />} />
+      <Route path="*" element={<Navigate to="/supplier" />} />
     </Routes>
   );
 };
