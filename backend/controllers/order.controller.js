@@ -69,6 +69,7 @@ exports.getOrdersBySupplier = async (req, res) => {
         {
           model: Supplier,
           required: true,
+          exclude: ["password", "createdAt", "updatedAt"],
         },
         {
           model: StoreOwner,
@@ -176,6 +177,7 @@ exports.getOrdersByStoreOwner = async (req, res) => {
         {
           model: Supplier,
           required: true,
+          exclude: ["password", "createdAt", "updatedAt"],
         },
         {
           model: StoreOwner,
