@@ -87,38 +87,73 @@ const SupplierOrders = () => {
       >
         <Typography variant="h2">הזמנות ספק</Typography>
       </Box>
-      <TableContainer sx={{ marginTop: 2 }}>
-        <Table>
+      <TableContainer
+        sx={{
+          marginTop: 2,
+          maxHeight: "70vh",
+        }}
+      >
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              <TableCell
+                align="right"
+                sx={{ fontWeight: "bold", minWidth: 120 }}
+              >
                 מספר הזמנה
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              <TableCell
+                align="right"
+                sx={{ fontWeight: "bold", minWidth: 120 }}
+              >
                 מק"ט מוצר
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              <TableCell
+                align="right"
+                sx={{ fontWeight: "bold", minWidth: 150 }}
+              >
                 שם בעל המכולת
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              <TableCell
+                align="right"
+                sx={{ fontWeight: "bold", minWidth: 150 }}
+              >
                 שם החברה
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              <TableCell
+                align="right"
+                sx={{ fontWeight: "bold", minWidth: 180 }}
+              >
                 מספר טלפון של בעל המכולת
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              <TableCell
+                align="right"
+                sx={{ fontWeight: "bold", minWidth: 150 }}
+              >
                 שם המוצר
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              <TableCell
+                align="right"
+                sx={{ fontWeight: "bold", minWidth: 120 }}
+              >
                 מחיר ליחידה
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              <TableCell
+                align="right"
+                sx={{ fontWeight: "bold", minWidth: 100 }}
+              >
                 כמות
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              <TableCell
+                align="right"
+                sx={{ fontWeight: "bold", minWidth: 120 }}
+              >
                 מחיר כולל
               </TableCell>
-              <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              <TableCell
+                align="right"
+                sx={{ fontWeight: "bold", minWidth: 150 }}
+              >
                 פעולות
               </TableCell>
             </TableRow>

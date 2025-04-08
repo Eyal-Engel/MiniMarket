@@ -1,16 +1,18 @@
-# Ignore Backend files
+# ignore Backend files
 BACKEND/node_modules/
 BACKEND/.env
 BACKEND/*.log
 BACKEND/.DS_Store
+BACKEND/package-lock.json
 
-# Ignore Frontend files
+# ignore Frontend files
 FRONTEND/node_modules/
 FRONTEND/.env
 FRONTEND/*.log
 FRONTEND/.DS_Store
+FRONTEND/package-lock.json
 
-# Ignore general files
+# ignore general files
 *.log
 *.env
 .DS_Store
